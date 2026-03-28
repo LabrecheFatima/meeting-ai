@@ -15,7 +15,9 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             )
-          } catch {} // Server Components can't set cookies — safe to ignore
+          } catch (e) {
+  if (process.env.NODE_ENV === 'development') console.warn('setAll failed:', e)
+}
         },
       },
     }

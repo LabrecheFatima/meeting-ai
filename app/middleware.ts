@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
-    process.env.m_M_SUPABASE_URL!,
+    process.env.m_mSUPABASE_URL!,
     process.env.m_SUPABASE_ANON_KEY!,
     {
       cookies: {
@@ -36,7 +36,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Redirect logged-in users away from login/signup
+  // Auto-redirect authenticated users from marketing routes to dashboard.
+  if (user && request.nextUrl.pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
+  // Redirect logged-in users away from login/signup.
   if (user && ['/login', '/signup'].includes(request.nextUrl.pathname)) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
